@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KMCU 감사 대비 현황판</title>
+  <meta name="description" content="계명문화대학교 감사 대비 지적사례 현황판">
+  <meta name="theme-color" content="#16325c">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">KM</span>
+      <div>
+        <h1>감사 대비 지적사례 현황판</h1>
+        <p class="sub">계명문화대학교 · 자체 점검용</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="dataBadge" class="badge" title="현재 사용 중인 데이터"></span>
+      <button id="btnData" class="btn ghost" type="button">데이터 관리</button>
+      <button id="btnTheme" class="btn ghost icon-only" type="button" aria-label="테마 전환">◐</button>
+      <button id="btnInstall" class="btn primary" type="button" hidden>앱 설치</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="메뉴">
+    <button role="tab" class="tab" data-page="dashboard" aria-selected="true">📊 <span>대시보드</span></button>
+    <button role="tab" class="tab" data-page="cases" aria-selected="false">📋 <span>사례목록</span></button>
+    <button role="tab" class="tab" data-page="institutions" aria-selected="false">🏫 <span>기관별</span></button>
+    <button role="tab" class="tab" data-page="guide" aria-selected="false">✅ <span>준비가이드</span></button>
+    <button role="tab" class="tab" data-page="depts" aria-selected="false">🏢 <span>담당업무</span></button>
+    <button role="tab" class="tab" data-page="chat" aria-selected="false">💬 <span>AI 도우미</span></button>
+  </nav>
+
+  <div class="scope-bar" id="scopeBar" hidden>
+    <span class="scope-label" id="scopeLabel">학교 종류</span>
+    <div class="scope-btns" id="scopeBtns" role="group" aria-labelledby="scopeLabel"></div>
+  </div>
+
+  <main>
+    <!-- 대시보드 -->
+    <section id="page-dashboard" class="page active" role="tabpanel">
+      <div id="sampleNotice" class="notice" hidden>
+        지금 보이는 자료는 <strong>기능 시연용 가상 예시 데이터</strong>입니다. 실제 감사결과는 <button class="linklike" type="button" data-open-data>데이터 관리</button>에서 불러오세요.
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="charts">
+        <figure class="card chart-card"><figcaption>지적유형별 건수</figcaption><div class="chart-box"><canvas id="chCatCount"></canvas></div></figure>
+        <figure class="card chart-card"><figcaption>지적유형별 재정상 조치 금액 (억원)</figcaption><div class="chart-box"><canvas id="chCatAmount"></canvas></div></figure>
+        <figure class="card chart-card"><figcaption>감사종류별 분포</figcaption><div class="chart-box"><canvas id="chAuditType"></canvas></div></figure>
+        <figure class="card chart-card"><figcaption>처분유형별 건수</figcaption><div class="chart-box"><canvas id="chAction"></canvas></div></figure>
+        <figure class="card chart-card wide"><figcaption>지적건수 상위 기관 TOP10</figcaption><div class="chart-box tall"><canvas id="chInstCount"></canvas></div></figure>
+        <figure class="card chart-card wide"><figcaption>재정상 조치 금액 상위 기관 TOP10 (억원)</figcaption><div class="chart-box tall"><canvas id="chInstAmount"></canvas></div></figure>
+        <figure class="card chart-card wide" id="schoolCard"><figcaption>학교 종류별 기관당 평균 지적건수 <small class="muted">(전체 데이터 기준 · 막대를 누르면 해당 종류만 보기)</small></figcaption><div class="chart-box"><canvas id="chSchoolType"></canvas></div></figure>
+      </div>
+    </section>
+
+    <!-- 사례목록 -->
+    <section id="page-cases" class="page" role="tabpanel">
+      <div class="card filters">
+        <label class="grow"><span>검색</span><input id="fText" type="search" placeholder="기관명, 지적내용, 관련규정…"></label>
+        <label><span>지적유형</span><select id="fCat"></select></label>
+        <label><span>감사종류</span><select id="fType"></select></label>
+        <label><span>처분</span><select id="fAction"></select></label>
+        <label class="chk"><input id="fMoney" type="checkbox"> 금액 있는 사례만</label>
+        <button id="fReset" class="btn ghost" type="button">초기화</button>
+      </div>
+      <p class="result-line" id="caseCount" aria-live="polite"></p>
+      <div class="card table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-sort="institution">기관</th>
+              <th data-sort="category">지적유형</th>
+              <th data-sort="issue" class="col-issue">지적내용</th>
+              <th data-sort="action">처분</th>
+              <th data-sort="amount" class="num">금액</th>
+              <th data-sort="year" class="num">연도</th>
+            </tr>
+          </thead>
+          <tbody id="caseBody"></tbody>
+        </table>
+      </div>
+      <div class="pager" id="pager"></div>
+    </section>
+
+    <!-- 기관별 -->
+    <section id="page-institutions" class="page" role="tabpanel">
+      <div class="split">
+        <div class="card list-panel">
+          <label class="full"><span>기관 검색</span><input id="instSearch" type="search" placeholder="기관명"></label>
+          <div class="seg" role="group" aria-label="정렬">
+            <button class="seg-btn active" data-isort="count" type="button">건수순</button>
+            <button class="seg-btn" data-isort="amount" type="button">금액순</button>
+            <button class="seg-btn" data-isort="name" type="button">이름순</button>
+          </div>
+          <ul id="instList" class="inst-list"></ul>
+        </div>
+        <div class="card detail-panel" id="instDetail">
+          <p class="empty">왼쪽에서 기관을 선택하세요.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 준비가이드 -->
+    <section id="page-guide" class="page" role="tabpanel">
+      <div class="card guide-head">
+        <div>
+          <h2>분야별 감사 준비 점검표</h2>
+          <p class="muted">항목을 체크하면 이 브라우저에 저장됩니다. 분야 제목을 누르면 펼쳐집니다.</p>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress"><div id="guideBar" class="progress-bar"></div></div>
+          <span id="guidePct">0%</span>
+        </div>
+      </div>
+      <div class="filters-inline">
+        <input id="guideSearch" type="search" placeholder="분야·점검항목 검색" aria-label="가이드 검색">
+        <button id="guideClear" class="btn ghost" type="button">체크 모두 해제</button>
+      </div>
+      <div id="guideList" class="guide-list"></div>
+    </section>
+
+    <!-- 담당업무 -->
+    <section id="page-depts" class="page" role="tabpanel">
+      <p class="muted">부서를 선택하면 해당 업무와 관련된 다른 기관의 지적사례를 보여줍니다. 매핑은 <code>data/departments.json</code>에서 수정할 수 있습니다.</p>
+      <div id="deptGrid" class="dept-grid"></div>
+      <div id="deptCases" class="card" hidden></div>
+    </section>
+
+    <!-- AI 도우미 -->
+    <section id="page-chat" class="page" role="tabpanel">
+      <div class="card chat">
+        <div id="chatLog" class="chat-log" aria-live="polite"></div>
+        <div class="quick" id="chatQuick"></div>
+        <form id="chatForm" class="chat-form">
+          <textarea id="chatInput" rows="1" placeholder="예: 업무추진비 관련 지적사례 알려줘" aria-label="질문 입력"></textarea>
+          <button class="btn primary" type="submit">보내기</button>
+        </form>
+        <p class="muted small">서버 없이 이 기기 안에서 사례를 검색해 답합니다. 답변은 참고용이며 공식 해석이 아닙니다.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>참고용 자체 점검 도구 · 실제 감사 대응은 관련 법령과 감사 원문을 확인하세요.</p>
+  </footer>
+
+  <!-- 사례 상세 -->
+  <dialog id="caseDialog" class="dialog">
+    <form method="dialog"><button class="close" aria-label="닫기">✕</button></form>
+    <div id="caseDetail"></div>
+  </dialog>
+
+  <!-- 데이터 관리 -->
+  <dialog id="dataDialog" class="dialog">
+    <form method="dialog"><button class="close" aria-label="닫기">✕</button></form>
+    <h2>데이터 관리</h2>
+    <p id="dataInfo" class="muted"></p>
+    <div class="data-actions">
+      <label class="btn primary file-btn">CSV / JSON 불러오기
+        <input id="fileInput" type="file" accept=".csv,.json,text/csv,application/json" hidden>
+      </label>
+      <label class="chk"><input id="appendMode" type="checkbox"> 기존 데이터에 추가</label>
+    </div>
+    <div class="data-actions">
+      <button id="btnExport" class="btn ghost" type="button">현재 데이터 JSON 내보내기</button>
+      <a class="btn ghost" href="data/import-template.csv" download>CSV 양식 받기</a>
+      <button id="btnReset" class="btn danger" type="button">기본 데이터로 되돌리기</button>
+    </div>
+    <p id="importMsg" class="msg" role="status"></p>
+    <details>
+      <summary>CSV 열 이름 안내</summary>
+      <p class="small">기관명, 감사종류, 지적유형, 지적내용, 관련규정, 처분(쉼표 구분), 금액(천원), 관련자, 연도, 링크 — 영문 필드명(institution, auditType, category, issue, law, action, amount, persons, year, url)도 인식합니다.</p>
+    </details>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="js/guide.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

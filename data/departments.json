@@ -1,0 +1,15 @@
+{
+  "note": "계명문화대학교 부서와 관련 지적유형·키워드 매핑입니다. 실제 직제에 맞게 이름과 키워드를 수정해 사용하세요.",
+  "departments": [
+    { "id": "planning", "name": "기획처", "icon": "🧭", "duties": "예산 편성, 규정 제·개정, 대학정보공시", "categories": ["개인정보·공시"], "keywords": ["예산 전용", "규정 제·개정", "정보공시", "공시"] },
+    { "id": "academic", "name": "교무처", "icon": "📚", "duties": "학사·성적·수업, 교원 임용", "categories": ["교육·학사"], "keywords": ["교원", "겸임", "성적", "학점", "수업"] },
+    { "id": "student", "name": "학생처", "icon": "🎓", "duties": "장학, 학생지원, 현장실습", "categories": ["학생·장학"], "keywords": ["장학", "현장실습", "학생"] },
+    { "id": "admission", "name": "입학처", "icon": "📝", "duties": "입학전형, 등록", "categories": [], "keywords": ["입학", "전형", "등록금"] },
+    { "id": "general", "name": "총무·인사팀", "icon": "👥", "duties": "직원 채용·승진, 복무, 징계", "categories": ["채용·인사", "복무·겸직", "징계·법령"], "keywords": ["채용", "승진", "복무", "징계", "겸직"] },
+    { "id": "finance", "name": "재무회계팀", "icon": "💰", "duties": "교비회계 집행, 업무추진비, 결산", "categories": ["예산·회계"], "keywords": ["교비", "업무추진비", "회계", "전출", "집행"] },
+    { "id": "facility", "name": "시설관리팀", "icon": "🏗️", "duties": "시설공사, 안전점검", "categories": ["시설·공사"], "keywords": ["공사", "설계변경", "안전점검", "준공"] },
+    { "id": "contract", "name": "구매·계약 담당", "icon": "📄", "duties": "입찰, 수의계약, 물품구매", "categories": ["계약·입찰"], "keywords": ["수의계약", "입찰", "계약", "발주"] },
+    { "id": "research", "name": "산학협력단", "icon": "🔬", "duties": "연구비 관리, 간접비, 연구장비", "categories": ["연구비·과제"], "keywords": ["연구비", "간접비", "연구장비", "인건비"] },
+    { "id": "board", "name": "법인사무국", "icon": "🏛️", "duties": "이사회 운영, 법인회계", "categories": ["기타"], "keywords": ["이사회", "법인회계", "정관", "회의록"] }
+  ]
+}
