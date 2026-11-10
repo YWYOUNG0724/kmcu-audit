@@ -2,6 +2,8 @@
 
 계명문화대학교 자체 감사 대비용 웹앱(PWA)입니다. 서버·DB 없이 정적 파일만으로 동작합니다.
 
+**사이트:** https://ywyoung0724.github.io/kmcu-audit/
+
 ## 실행
 ```bash
 cd E:/Program/KMCU_AUDIT
@@ -29,7 +31,8 @@ python -m http.server 8765
 | `js/chatbot.js` | 동의어 사전(SYNONYMS) |
 
 ## 배포
-폴더 전체를 학내 웹서버나 GitHub Pages에 올리면 됩니다. 파일을 바꾼 뒤에는 `sw.js`의 `CACHE` 이름(버전)을 올려 주세요.
+GitHub Pages(저장소 `YWYOUNG0724/kmcu-audit`, `main` 브랜치 루트)로 배포됩니다. `main`에 올리면 1~2분 뒤 사이트에 반영됩니다.
+파일을 바꾼 뒤에는 `sw.js`의 `CACHE` 이름(버전)을 올려야 설치된 앱에도 반영됩니다. 학내 웹서버에 올릴 때도 폴더를 그대로 복사하면 됩니다(`raw/` 제외).
 
 ## 문서
 - [docs/00_REA_분석결과.md](docs/00_REA_분석결과.md)
